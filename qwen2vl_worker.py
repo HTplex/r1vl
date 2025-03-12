@@ -1,12 +1,12 @@
-from transformers import Qwen2VLForConditionalGeneration, AutoTokenizer, AutoProcessor
+from transformers import Qwen2_5_VLForConditionalGeneration, AutoTokenizer, AutoProcessor
 from qwen_vl_utils import process_vision_info
 
 class QwenVLWorker:
     def __init__(self,):
-        self.model = Qwen2VLForConditionalGeneration.from_pretrained(
-            "/home/agent_h/data/llms/Qwen2-VL-72B-Instruct",
+        self.model = Qwen2_5_VLForConditionalGeneration.from_pretrained(
+            "/home/agent_h/data/llms/Qwen2.5-VL-72B-Instruct",
             torch_dtype="auto",
-            load_in_8bit=True,
+            # load_in_8bit=True,
             device_map="auto")
             # model = Qwen2_5_VLForConditionalGeneration.from_pretrained(
             #     "Qwen/Qwen2.5-VL-72B-Instruct",
@@ -15,10 +15,11 @@ class QwenVLWorker:
             #     device_map="auto",
             # )
 
-        self.processor = AutoProcessor.from_pretrained("/home/agent_h/data/llms/Qwen2-VL-72B-Instruct",min_pixels=896*896,max_pixels=1792*1792)
+        self.processor = AutoProcessor.from_pretrained("/home/agent_h/data/llms/Qwen2.5-VL-72B-Instruct",min_pixels=1200*1200,max_pixels=1792*1792)
 
-    def discribe_image(self,img_path):
+    def discribe_image(self,img_path,prompt):
         print(img_path)
+        print(prompt)
         messages = [
             {
                 "role": "user",
@@ -28,7 +29,7 @@ class QwenVLWorker:
                         "image": img_path,
                     },
                     {"type": "text",
-                     "text": "please discribe the image in detail to a blind person, include as much detail as possible."},
+                     "text": prompt},
                 ],
             }
         ]
